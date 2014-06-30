@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.configuration.xml.reload" value="false" />
+	<constant name="struts.devMode" value="false" />
+	<constant name="struts.i18n.encoding" value="UTF-8" />
+
+	<package name="init" extends="struts-default" namespace="/">
+	   	<action name="">
+        	<result>/index.jsp</result>
+		</action>
+		<action name="init" class="com.easeye.quartz.quartzmonitor.action.InitAction">
+			<result name="success" type="redirect">/index.jsp</result>
+		</action>
+		<action name="config" class="com.easeye.quartz.quartzmonitor.action.InitAction" method="config">
+			<result name="success">/index.jsp</result>
+		</action>
+		<action name="check" class="com.easeye.quartz.quartzmonitor.action.InitAction" method="check">
+			<result name="success">/date_list.jsp</result>
+		</action>
+		<action name="login" class="com.easeye.quartz.quartzmonitor.action.InitAction" method="login">
+			<result name="success">/index.jsp</result>
+			<result name="error">/authenticate_fail.html</result>
+		</action>
+		<action name="logout" class="com.easeye.quartz.quartzmonitor.action.InitAction" method="logout">
+			<result name="success">/login.html</result>
+		</action>
+	</package>
+
+	<package name="quartz" extends="struts-default" namespace="/quartz">
+		<action name="add" class="com.easeye.quartz.quartzmonitor.action.ConfigAction" method="add">
+			<result name="success">/index.html</result>
+			<result name="input">/login.jsp</result>
+		</action>
+		<action name="list" class="com.easeye.quartz.quartzmonitor.action.ConfigAction" method="list">
+			<result name="list">/w_list.jsp</result>
+		</action>
+		<action name="show" class="com.easeye.quartz.quartzmonitor.action.ConfigAction" method="show">
+			<result name="show">/updateInstance.jsp</result>
+		</action>
+		<action name="update" class="com.easeye.quartz.quartzmonitor.action.ConfigAction" method="update">
+		</action>
+		<action name="delete" class="com.easeye.quartz.quartzmonitor.action.ConfigAction" method="delete">
+		</action>
+	</package>
+
+
+	<package name="job" extends="struts-default" namespace="/job">
+		<action name="list" class="com.easeye.quartz.quartzmonitor.action.JobAction"	method="list">
+			<result name="list">/job_list.jsp</result>
+		</action>
+		<action name="start" class="com.easeye.quartz.quartzmonitor.action.JobAction" method="start">
+		</action>
+		<action name="delete" class="com.easeye.quartz.quartzmonitor.action.JobAction" method="delete">
+		</action>
+		<action name="pause" class="com.easeye.quartz.quartzmonitor.action.JobAction" method="pause">
+		</action>
+		<action name="resume" class="com.easeye.quartz.quartzmonitor.action.JobAction" method="resume">
+		</action>
+		<action name="show" class="com.easeye.quartz.quartzmonitor.action.JobAction" method="show">
+			<result name="add">/addJob.jsp</result>
+		</action>
+		<action name="add" class="com.easeye.quartz.quartzmonitor.action.JobAction" method="add">
+		</action>
+		<action name="edit" class="com.easeye.quartz.quartzmonitor.action.JobAction" method="edit">
+			<result name="edit">/updateJob.jsp</result>
+		</action>
+		<action name="update" class="com.easeye.quartz.quartzmonitor.action.JobAction" method="update">
+		</action>
+	</package>
+
+	<package name="trigger" extends="struts-default" namespace="/trigger">
+		<action name="list" class="com.easeye.quartz.quartzmonitor.action.TriggerAction" method="list">
+			<result name="list">/trigger_list.jsp</result>
+		</action>
+		<action name="delete" class="com.easeye.quartz.quartzmonitor.action.TriggerAction" method="delete">
+		</action>
+		<action name="addShow" class="com.easeye.quartz.quartzmonitor.action.TriggerAction" method="addShow">
+			<result name="list">/addTrigger.jsp</result>
+		</action>
+		<action name="add" class="com.easeye.quartz.quartzmonitor.action.TriggerAction" method="add">
+		</action>
+		<action name="pause" class="com.easeye.quartz.quartzmonitor.action.TriggerAction" method="pause">
+		</action>
+		<action name="resume" class="com.easeye.quartz.quartzmonitor.action.TriggerAction" method="resume">
+		</action>
+		<action name="edit" class="com.easeye.quartz.quartzmonitor.action.TriggerAction" method="edit">
+			<result name="edit">/updateTrigger.jsp</result>
+		</action>
+		<action name="update" class="com.easeye.quartz.quartzmonitor.action.TriggerAction" method="update">
+		</action>
+	</package>
+
+</struts>
