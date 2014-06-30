@@ -56,7 +56,7 @@ function setJobSchedulerName(){
 				 -->
 				 <input type="text" class="required" name="job.jobClass" alt="请输入全路径的类名" />
 			</div>
-			<!--div class="unit">
+			<div class="unit">
 				<label>job参数：</label>
 				<img alt="添加一个参数" src="images/add-16x16.png" onclick="addOneJobData();" />
 				<table width="400">
@@ -71,7 +71,7 @@ function setJobSchedulerName(){
 						
 					</tbody>
 				</table>
-			</div-->
+			</div>
 			<div class="unit">
 				<label>所属Schedule：</label>
 				<select name="job.uuid" class="required" onchange="setJobSchedulerName();">

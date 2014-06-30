@@ -142,12 +142,15 @@ public class JobAction extends ActionSupport {
 			if (schedulers != null && schedulers.size() > 0) {
 				for (int i = 0; i < schedulers.size(); i++) {
 					Scheduler scheduler = schedulers.get(i);
-					List<Job> nativeJobs = jobService.getALLJobs(scheduler.getQuartzInstanceUUID());
-					List<Job> temp = instance.getJmxAdapter().getJobDetails(instance, scheduler);
-					for (Job job : temp) {
-						for (Job nativeJob : nativeJobs) {
+					List<Job> localJobsInDb = jobService.getALLJobs(scheduler.getQuartzInstanceUUID());
+					List<Job> remoteJobsByJMX = instance.getJmxAdapter().getJobDetails(instance, scheduler);
+					for (Job job : remoteJobsByJMX) {
+						for (Job nativeJob : localJobsInDb) {
 							if (job.getJobName().equals(nativeJob.getJobName()) && job.getGroup().equals(nativeJob.getGroup())) {
 								job.setUuid(nativeJob.getUuid());
+								if(null == job.getJobDataMap()){
+									job.setJobDataMap(nativeJob.getJobDataMap());
+								}
 								JobContainer.addJob(job.getUuid(), job);
 								jobList.add(job);
 							}

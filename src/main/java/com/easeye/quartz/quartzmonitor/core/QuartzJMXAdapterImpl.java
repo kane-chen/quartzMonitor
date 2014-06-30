@@ -13,6 +13,7 @@ import javax.management.openmbean.CompositeDataSupport;
 import javax.management.openmbean.TabularDataSupport;
 
 import org.apache.log4j.Logger;
+import org.quartz.core.jmx.JobDataMapSupport;
 
 import com.easeye.quartz.quartzmonitor.object.JMXInput;
 import com.easeye.quartz.quartzmonitor.object.Job;
@@ -25,6 +26,7 @@ import com.easeye.quartz.quartzmonitor.util.Tools;
 
 /**
  * http://www.quartz-scheduler.org/api/2.0.0/index.html?org/quartz/jobs/ee/jmx/JMXInvokerJob.html
+ * @see org.quartz.core.QuartzSchedulerMBeanImpl
  */
 public class QuartzJMXAdapterImpl implements QuartzJMXAdapter {
 
@@ -215,10 +217,11 @@ public class QuartzJMXAdapterImpl implements QuartzJMXAdapter {
 		triggerMap.put("jobName", job.getJobName());
 		triggerMap.put("jobGroup", job.getGroup());
 		
+		triggerMap.put("jobDataMap", JobDataMapSupport.newJobDataMap(job.getJobDataMap())) ;
+		
 		//Map<String,Object> jobMap = QuartzUtil.convertJob2Map(job);
 //		JMXInput jmxInput = new JMXInput(quartzInstance, new String[]{"java.util.Map","java.util.Map"}, "scheduleBasicJob", new Object[]{jobMap,triggerMap}, scheduler.getObjectName());
 //	    JMXUtil.callJMXOperation(jmxInput);
-	    
 		JMXInput jmxInput = new JMXInput(quartzInstance, new String[]{"java.lang.String","java.lang.String","java.util.Map"}, "scheduleJob", new Object[]{job.getJobName(),job.getGroup(),triggerMap}, scheduler.getObjectName());
 	    JMXUtil.callJMXOperation(jmxInput);
 		
@@ -266,8 +269,7 @@ public class QuartzJMXAdapterImpl implements QuartzJMXAdapter {
 		JMXInput jmxInput = new JMXInput(quartzInstance, new String[]{"java.util.Map","java.util.Map"}, "scheduleBasicJob", new Object[]{jobMap,triggerMap}, scheduler.getObjectName());
 	    JMXUtil.callJMXOperation(jmxInput);
 	    **/
-		//必须指定trigger的class，也就是必须有存在的trigger
-		
+		triggerMap.put("jobDataMap",  JobDataMapSupport.newJobDataMap(job.getJobDataMap())) ;
 		//JMXInput jmxInput = new JMXInput(quartzInstance, new String[]{"java.util.Map","java.util.Map"}, "scheduleJob", new Object[]{jobMap,triggerMap}, scheduler.getObjectName());
 		JMXInput jmxInput = new JMXInput(quartzInstance, new String[]{"java.lang.String","java.lang.String","java.util.Map"}, "scheduleJob", new Object[]{job.getJobName(),job.getGroup(),triggerMap}, scheduler.getObjectName());
 	    JMXUtil.callJMXOperation(jmxInput);
