@@ -4,7 +4,17 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
+<script type="text/javascript">
 
+function addOneJobData(){
+	$("#jobDataMapDataId").append("<tr><td><input type='text' class='required' name='jobDataMapKey' /></td><td><input type='text' class='required' name='jobDataMapValue' /></td><td align='center'><img alt='删除一个参数' src='images/delete-16x16.png' onclick='deletecurtr(this);' /></td></tr>");
+}
+
+function deletecurtr(obj){
+	$(obj).parent().parent().remove();  //删除当前行
+}
+
+</script>
 <div class="pageContent">
 	<form method="post" action="<%=request.getContextPath()%>/job/update.action" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
 		<div class="pageFormContent" layoutH="56">
@@ -25,7 +35,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<label>job类型：</label>
 				 <input type="text" class="required" name="job.jobClass"  value="${job.jobClass }" />
 			</div>
-			
+			<div class="unit">
+				<label>job参数：</label>
+				<img alt="添加一个参数" src="images/add-16x16.png" onclick="addOneJobData();" />
+				<table width="400">
+					<thead>
+						<tr>
+							<td align="center" width="33%">jobDataMapKey</td>
+							<td align="center" width="33%">jobDataMapValue</td>
+							<td align="center" width="33%">删除操作</td>
+						</tr>
+					</thead>
+					<tbody id="jobDataMapDataId">
+						<s:iterator value="jobDataMap.keySet" id="key">
+							<tr>
+								<td><input type='text' class='required' name='jobDataMapKey' value='<s:property value="key" />'/></td>
+								<td><input type='text' class='required' name='jobDataMapValue' value='<s:property value="jobDataMap.get(#key)" />'/></td>
+								<td align='center'><img alt='删除一个参数' src='images/delete-16x16.png' onclick='deletecurtr(this);' /></td>
+							</tr>
+						</s:iterator>
+					</tbody>
+				</table>
+			</div>
 			<div class="unit">
 				<label>所属Schedule：</label>
 				<input name="job.schedulerName" class="required" type="text" value="${job.schedulerName }" readonly="readonly" />

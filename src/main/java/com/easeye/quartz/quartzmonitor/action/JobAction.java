@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.quartz.core.jmx.JobDataMapSupport;
 
 import com.easeye.quartz.quartzmonitor.core.JobContainer;
 import com.easeye.quartz.quartzmonitor.core.QuartzInstanceContainer;
@@ -38,6 +39,7 @@ public class JobAction extends ActionSupport {
 	private Job job;
 	private Set<String> jobSet = new HashSet<String>();
 	private Map<String, String> schedulerMap = new HashMap<String, String>();
+	private Map<String, Object> jobDataMap = new HashMap<String, Object>() ;
 	private List<String> jobDataMapKey = new ArrayList<String>();
 	private List<String> jobDataMapValue = new ArrayList<String>();
 	
@@ -73,14 +75,12 @@ public class JobAction extends ActionSupport {
 		map.put("name", nativeJob.getJobName());
 		map.put("group", nativeJob.getGroup());
 		map.put("description", nativeJob.getDescription());
-//		map.put("jobClass", JobContainer.getJobById(job.getJobClass()).getJobClass());
 		map.put("jobClass", nativeJob.getJobClass());
 		
-//		if(nativeJob.getJobDataMap().size() > 0){
-//			map.put("jobDataMap", nativeJob.getJobDataMap());   //job需要的参数
-//		}
+		if(null!=nativeJob.getJobDataMap()){
+			map.put("jobDataMap",  JobDataMapSupport.newJobDataMap(nativeJob.getJobDataMap()));   //job需要的参数
+		}
 		
-		// map.put("jobDetailClass", "org.quartz.Job");
 		map.put("durability", true);
 		map.put("jobDetailClass", "org.quartz.impl.JobDetailImpl");
 		
@@ -248,13 +248,10 @@ public class JobAction extends ActionSupport {
 
 	public String add() throws Exception {
 
-//		QuartzInstance instance = Tools.getQuartzInstance();
-		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("name", job.getJobName());
 		map.put("group", job.getGroup());
 		map.put("description", job.getDescription());
-//		map.put("jobClass", JobContainer.getJobById(job.getJobClass()).getJobClass());
 		map.put("jobClass", job.getJobClass());
 		
 		if(jobDataMapKey.size() > 0){
@@ -267,7 +264,6 @@ public class JobAction extends ActionSupport {
 			map.put("jobDataMap", job.getJobDataMap());   //job需要的参数
 		}
 		
-		// map.put("jobDetailClass", "org.quartz.Job");
 		map.put("durability", true);
 		map.put("jobDetailClass", "org.quartz.impl.JobDetailImpl");
 		
@@ -291,7 +287,6 @@ public class JobAction extends ActionSupport {
 	public String edit() throws Exception {
 
 		Job myJob = JobContainer.getJobById(jobuuid);
-		
 		job = new Job();
 		job.setUuid(myJob.getUuid());
 		job.setJobName(myJob.getJobName());
@@ -299,6 +294,7 @@ public class JobAction extends ActionSupport {
 		job.setJobClass(myJob.getJobClass());
 		job.setDescription(myJob.getDescription());
 		job.setSchedulerName(myJob.getSchedulerName());
+		jobDataMap = myJob.getJobDataMap() ;
 		return "edit";
 	}
 	
@@ -313,7 +309,15 @@ public class JobAction extends ActionSupport {
 		map.put("group", myJob.getGroup());
 		map.put("description", myJob.getDescription());
 		map.put("jobClass", myJob.getJobClass());
-		
+		if(jobDataMapKey.size() > 0){
+			Map<String, Object> parammap = new HashMap<String, Object>();
+			for (int i=0; i<jobDataMapKey.size(); i++) {
+				parammap.put(jobDataMapKey.get(i), jobDataMapValue.get(i));
+			}
+			
+			job.setJobDataMap(parammap);
+			map.put("jobDataMap", job.getJobDataMap());   //job需要的参数
+		}
 		map.put("durability", true);
 		map.put("jobDetailClass", "org.quartz.impl.JobDetailImpl");
 		
@@ -430,6 +434,14 @@ public class JobAction extends ActionSupport {
 
 	public void setJobDataMapValue(List<String> jobDataMapValue) {
 		this.jobDataMapValue = jobDataMapValue;
+	}
+
+	public Map<String, Object> getJobDataMap() {
+		return jobDataMap;
+	}
+
+	public void setJobDataMap(Map<String, Object> jobDataMap) {
+		this.jobDataMap = jobDataMap;
 	}
 
 }
