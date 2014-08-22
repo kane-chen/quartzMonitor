@@ -1,0 +1,60 @@
+
+
+1.Managed-Quartz-Instance
+
+
+  1.1 quartz.properties
+  	___________________________________________________________________________________________  	
+  	
+     # Must be set to true, otherwise the Quartz scheduler is not registered in the JMX server
+	 org.quartz.scheduler.jmx.export=true
+	 # JMX object name the Quartz scheduler is registered under in the JMX server.
+	 org.quartz.scheduler.jmx.objectName=quartz:type=QuartzScheduler,name=KaneScheduler
+    ___________________________________________________________________________________________
+ 
+  1.2 Tomcat JMX-Support
+    ___________________________________________________________________________________________
+        
+    set JMX_REMOTE_CONFIG=-Dcom.sun.management.jmxremote=true -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.port=9000 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false  
+	set CATALINA_OPTS=%CATALINA_OPTS% -Dquartzdesk.work.dir="D:\datas\quartzdesk" %JMX_REMOTE_CONFIG%  	
+	___________________________________________________________________________________________
+	
+	
+2. SQL
+
+	___________________________________________________________________________________________
+
+	CREATE TABLE `t_scheduler` (
+	   `schedulerId` varchar(128) NOT NULL,
+	   `name` varchar(64) NOT NULL,
+	   `host` varchar(128) NOT NULL,
+	   `port` int(11) NOT NULL,
+	   `userName` varchar(50) DEFAULT NULL,
+	   `password` varchar(50) DEFAULT NULL,
+	   PRIMARY KEY (`schedulerId`)
+	 ) ENGINE=InnoDB DEFAULT CHARSET=UTF-8 ;
+	
+	CREATE TABLE `t_job` (
+	   `jobId` varchar(128) NOT NULL,
+	   `schedulerId` varchar(128) NOT NULL,
+	   `jobName` varchar(32) NOT NULL,
+	   `group` varchar(32) NOT NULL,
+	   `jobClass` varchar(256) NOT NULL,
+	   `jobDataMap` varchar(1024) ,
+	   `description` varchar(50) ,
+	   `durability` int(11) NOT NULL DEFAULT '1',
+	   `shouldRecover` int(11) NOT NULL DEFAULT '0',
+	   `triggerCount` int(11) NOT NULL DEFAULT '0',
+	   PRIMARY KEY (`jobId`)
+	 ) ENGINE=InnoDB DEFAULT CHARSET=UTF-8 ;
+	
+	CREATE TABLE `t_trigger` (
+	   `triggerId` varchar(128) NOT NULL,
+	   `jobId` varchar(128) NOT NULL,
+	   `name` varchar(50) NOT NULL,
+	   `description` varchar(50) ,
+	   `group` varchar(50) NOT NULL,
+	   `cronexpr` varchar(50) NOT NULL,
+	   PRIMARY KEY (`triggerId`)
+	 ) ENGINE=InnoDB DEFAULT CHARSET=UTF-8 ;
+	___________________________________________________________________________________________
