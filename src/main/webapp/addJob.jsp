@@ -14,7 +14,8 @@ jQuery(document).ready(function(){
 });
 
 function addOneJobData(){
-	$("#jobDataMapDataId").append("<tr><td><input type='text' class='required' name='jobDataMapKey' /></td><td><input type='text' class='required' name='jobDataMapValue' /></td><td align='center'><img alt='删除一个参数' src='images/delete-16x16.png' onclick='deletecurtr(this);' /></td></tr>");
+	var index = $("#jobDataMapDataId tr").length;
+	$("#jobDataMapDataId").append("<tr><td><input type='text' class='required' name='jobDataMapKey["+index+"]' /></td><td><input type='text' class='required' name='jobDataMapValue["+index+"]' /></td><td align='center'><img alt='删除一个参数' src='images/delete-16x16.png' onclick='deletecurtr(this);' /></td></tr>");
 }
 
 function deletecurtr(obj){

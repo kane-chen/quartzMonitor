@@ -309,14 +309,15 @@ public class JobAction extends ActionSupport {
 		map.put("group", myJob.getGroup());
 		map.put("description", myJob.getDescription());
 		map.put("jobClass", myJob.getJobClass());
+		//jobDataMap
 		if(jobDataMapKey.size() > 0){
 			Map<String, Object> parammap = new HashMap<String, Object>();
 			for (int i=0; i<jobDataMapKey.size(); i++) {
 				parammap.put(jobDataMapKey.get(i), jobDataMapValue.get(i));
 			}
 			
-			job.setJobDataMap(parammap);
-			map.put("jobDataMap", job.getJobDataMap());   //job需要的参数
+			myJob.setJobDataMap(parammap);
+			map.put("jobDataMap", myJob.getJobDataMap());
 		}
 		map.put("durability", true);
 		map.put("jobDetailClass", "org.quartz.impl.JobDetailImpl");
