@@ -35,4 +35,7 @@ public interface SchedulerDao {
 	 * @throws DBException 
 	 */
 	public void deleteScheduler(String schedulerId) throws DBException, SQLException;
+	
+	
+	public Scheduler getSchedulerByHost(String host,int port,String schedulerName) throws DBException, SQLException;
 }

@@ -35,4 +35,15 @@ public interface SchedulerService {
 	 * @throws DBException 
 	 */
 	public void deleteScheduler(String schedulerId) throws DBException, SQLException;
+	
+	/**
+	 * 根据host&port查询scheduler
+	 * @param host
+	 * @param port
+	 * @param schedulerName
+	 * @return
+	 * @throws DBException
+	 * @throws SQLException
+	 */
+	public Scheduler getSchedulerByHost(String host,int port,String schedulerName) throws DBException, SQLException ;
 }

@@ -42,5 +42,10 @@ public class SchedulerServiceImpl implements SchedulerService {
 	public List<Scheduler> getALLSchedulers() throws DBException, SQLException {
 		return schedulerDao.getALLSchedulers();
 	}
+	@Override
+	public Scheduler getSchedulerByHost(String host, int port,
+			String schedulerName) throws DBException, SQLException {
+		return schedulerDao.getSchedulerByHost(host, port, schedulerName);
+	}
 
 }

@@ -42,6 +42,8 @@
 		</action>
 		<action name="delete" class="com.easeye.quartz.quartzmonitor.action.ConfigAction" method="delete">
 		</action>
+		<action name="sync" class="com.easeye.quartz.quartzmonitor.action.ConfigAction" method="sync">
+		</action>
 	</package>
 
 

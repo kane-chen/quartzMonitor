@@ -84,5 +84,40 @@ public class SchedulerDaoImpl extends CommonDao implements SchedulerDao {
 		
 		return list;
 	}
+	@Override
+	public Scheduler getSchedulerByHost(String host, int port,String schedulerName)	throws DBException, SQLException {
+		String sql = "SELECT schedulerid AS quartzInstanceUUID, name, host, port, userName, password "
+				+ "FROM t_scheduler where host=? and port=?";
+		QueryRunner queryRunner = new QueryRunner(true);
+		Connection conn = null;
+		List<Scheduler> list = new ArrayList<Scheduler>(0);
+		try {
+			conn = DataSourceMapUtil.getConnection(this.getDsObj());
+			if(null!=schedulerName){
+				sql += " and name= ? " ;
+				JdbcUtil.operaterDebugSql(sql, host,port,schedulerName);
+				list = queryRunner.query(conn, sql, new BeanListHandler<Scheduler>(Scheduler.class),host,port,schedulerName);
+			}else{
+				JdbcUtil.operaterDebugSql(sql, host,port);
+				list = queryRunner.query(conn, sql, new BeanListHandler<Scheduler>(Scheduler.class),host,port);
+			}
+			DbUtils.commitAndCloseQuietly(conn);
+		} catch (Exception e) {
+			throw new DBException("执行SQL: " + sql + "失败: " + e.getMessage(), e);
+		} finally {
+			if (conn != null && !conn.isClosed()) {
+				conn.close();
+			}
+		}
+		
+		if(null == list || list.isEmpty()){
+			throw new SQLException("未找到对应记录:["+host+":"+port+"],name="+schedulerName) ;
+		}
+		if(list.size() != 1){
+			throw new SQLException("找到的记录不唯一:["+host+":"+port+"],name="+schedulerName) ;
+		}
+		
+		return list.get(0);
+	}
 
 }

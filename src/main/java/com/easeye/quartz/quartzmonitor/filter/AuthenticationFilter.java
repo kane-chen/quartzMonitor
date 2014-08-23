@@ -38,6 +38,8 @@ public class AuthenticationFilter implements Filter {
 				filterChain.doFilter(request, response);
 			} else if (url.toLowerCase().endsWith("/authenticate_fail.html")) {
 				filterChain.doFilter(request, response);
+			} else if (url.toLowerCase().endsWith("/sync.action")) {
+				filterChain.doFilter(request, response);
 			}else {
 				url = httpServletRequest.getContextPath() + "/login.html";
 				((HttpServletResponse) response).sendRedirect(url);
