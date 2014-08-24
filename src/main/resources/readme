@@ -45,6 +45,7 @@
 	   `durability` int(11) NOT NULL DEFAULT '1',
 	   `shouldRecover` int(11) NOT NULL DEFAULT '0',
 	   `triggerCount` int(11) NOT NULL DEFAULT '0',
+	   `schedulerStatus` int(11) NOT NULL DEFAULT '0',
 	   PRIMARY KEY (`jobId`)
 	 ) ENGINE=InnoDB DEFAULT CHARSET=UTF-8 ;
 	

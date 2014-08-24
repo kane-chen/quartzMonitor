@@ -68,6 +68,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<s:else>
       				未知
 				</s:else>
+				<s:if test="#job.state == 'NORMAL' || #job.state == 'PAUSED'">
+    				 <a href="<%=request.getContextPath()%>/job/stop.action?uuid=${job.quartzInstanceId}&jobuuid=${job.uuid}" target="ajaxTodo">中止</a>
+   				 </s:if>
+   				 <s:elseif test="#job.jobStatus == '3' ">
+    				 <a href="<%=request.getContextPath()%>/job/restart.action?uuid=${job.quartzInstanceId}&jobuuid=${job.uuid}" target="ajaxTodo">继续</a>
+   				 </s:elseif>
 				</td>
 				<td>${job.description }</td>
 			</tr>

@@ -42,7 +42,18 @@ public class JobServiceImpl implements JobService {
 
 	@Override
 	public List<Job> getALLJobs(String schedulerId) throws DBException, SQLException {
-		return jobDao.getALLJobs(schedulerId);
+		return jobDao.getALLJobs(schedulerId,-1);
+	}
+	
+	@Override
+	public List<Job> getALLRunJobs(String schedulerId) throws DBException, SQLException {
+		return jobDao.getALLJobs(schedulerId,Job.STATUS_RUN);
+	}
+
+	@Override
+	public void updateJob(String jobId, int status) throws DBException,
+			SQLException {
+		jobDao.updateJob(jobId, status);
 	}
 
 }

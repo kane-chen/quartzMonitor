@@ -93,7 +93,7 @@ public class ConfigAction extends ActionSupport {
 	}
 	
 	private void syncScheduler(QuartzInstance quartzInstance,Scheduler scheduler) throws Exception{
-		List<Job> nativeJobs = jobService.getALLJobs(scheduler.getQuartzInstanceUUID());
+		List<Job> nativeJobs = jobService.getALLRunJobs(scheduler.getQuartzInstanceUUID());
 		List<Job> remoteJobs = quartzInstance.getJmxAdapter().getJobDetails(quartzInstance, scheduler);
 		for (Job nativeJob : nativeJobs) {
 			boolean nativeJobExistInRemote = false;

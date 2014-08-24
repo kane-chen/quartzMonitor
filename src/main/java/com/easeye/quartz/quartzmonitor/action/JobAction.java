@@ -107,7 +107,7 @@ public class JobAction extends ActionSupport {
 			if (schedulers != null && schedulers.size() > 0) {
 				for (int i = 0; i < schedulers.size(); i++) {
 					Scheduler scheduler = schedulers.get(i);
-					List<Job> nativeJobs = jobService.getALLJobs(scheduler.getQuartzInstanceUUID());
+					List<Job> nativeJobs = jobService.getALLRunJobs(scheduler.getQuartzInstanceUUID());
 					List<Job> remoteJobs = instance.getJmxAdapter().getJobDetails(instance, scheduler);
 					for (Job nativeJob : nativeJobs) {
 						boolean nativeJobExistInRemote = false;
@@ -144,15 +144,31 @@ public class JobAction extends ActionSupport {
 					Scheduler scheduler = schedulers.get(i);
 					List<Job> localJobsInDb = jobService.getALLJobs(scheduler.getQuartzInstanceUUID());
 					List<Job> remoteJobsByJMX = instance.getJmxAdapter().getJobDetails(instance, scheduler);
-					for (Job job : remoteJobsByJMX) {
-						for (Job nativeJob : localJobsInDb) {
-							if (job.getJobName().equals(nativeJob.getJobName()) && job.getGroup().equals(nativeJob.getGroup())) {
-								job.setUuid(nativeJob.getUuid());
-								if(null == job.getJobDataMap()){
-									job.setJobDataMap(nativeJob.getJobDataMap());
+					Map<String,Job> remoteJobsMap = new HashMap<String,Job>() ;
+					if(null!=remoteJobsByJMX){
+						for(Job remoteJob : remoteJobsByJMX){
+							if(null!=remoteJob){
+								remoteJobsMap.put(remoteJob.getJobName()+"_"+remoteJob.getGroup(), remoteJob) ;
+							}
+						}
+					}
+					for(Job nativeJob : localJobsInDb){
+						if(null!=nativeJob){
+							String mapKey = nativeJob.getJobName()+"_"+nativeJob.getGroup() ;
+							Job trueJob = remoteJobsMap.get(mapKey) ;
+							if(null!=trueJob){
+								trueJob.setUuid(nativeJob.getUuid());
+								if(null == trueJob.getJobDataMap()){
+									trueJob.setJobDataMap(nativeJob.getJobDataMap());
 								}
-								JobContainer.addJob(job.getUuid(), job);
-								jobList.add(job);
+								JobContainer.addJob(trueJob.getUuid(), trueJob);
+								jobList.add(trueJob);
+								trueJob.setJobStatus(Job.STATUS_RUN);
+							}else{
+								if(Job.STATUS_RUN == nativeJob.getJobStatus()){
+									nativeJob.setJobStatus(Job.STATUS_STOP);
+								}
+								jobList.add(nativeJob) ;
 							}
 						}
 					}
@@ -207,6 +223,7 @@ public class JobAction extends ActionSupport {
 		QuartzInstance instance = Tools.getQuartzInstance(uuid);
 
 		Job job = JobContainer.getJobById(jobuuid);
+		jobService.updateJob(job.getUuid(), Job.STATUS_PAUSE);
 		log.info("pause a quartz job!");
 		instance.getJmxAdapter().pauseJob(instance, instance.getSchedulerByName(job.getSchedulerName()), job);
 		Result result = new Result();
@@ -216,14 +233,56 @@ public class JobAction extends ActionSupport {
 		return null;
 	}
 
-	public String resume() throws Exception {
+	public String stop() throws Exception {
 
 		QuartzInstance instance = Tools.getQuartzInstance(uuid);
 
 		Job job = JobContainer.getJobById(jobuuid);
+		jobService.updateJob(job.getUuid(), Job.STATUS_STOP);
+		log.info("stop a quartz job!");
+		instance.getJmxAdapter().deleteJob(instance, instance.getSchedulerByName(job.getSchedulerName()), job);
+
+		Result result = new Result();
+		result.setMessage("Job已中止");
+		result.setCallbackType("");
+		JsonUtil.toJson(new Gson().toJson(result));
+		return null;
+	}
+	
+	public String restart() throws Exception {
+
+		Job myJob = JobContainer.getJobById(jobuuid);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("name", myJob.getJobName());
+		map.put("group", myJob.getGroup());
+		map.put("description", myJob.getDescription());
+		map.put("jobClass", myJob.getJobClass());
+		map.put("jobDataMap", myJob.getJobDataMap());
+		map.put("durability", true);
+		map.put("jobDetailClass", "org.quartz.impl.JobDetailImpl");
+		
+		QuartzInstance instance = Tools.getQuartzInstance(uuid);
+		instance.getJmxAdapter().updateJob(instance, instance.getSchedulerByName(myJob.getSchedulerName()), map);
+		
+		jobService.updateJob(job.getUuid(), Job.STATUS_RUN);
+		log.info("restart a quartz job!");
+		
+		Result result = new Result();
+		result.setMessage("修改成功");
+		JsonUtil.toJson(new Gson().toJson(result));
+		return null;
+		
+	}
+
+	public String resume() throws Exception {
+		
+		QuartzInstance instance = Tools.getQuartzInstance(uuid);
+		
+		Job job = JobContainer.getJobById(jobuuid);
+		jobService.updateJob(job.getUuid(), Job.STATUS_RUN);
 		log.info("resume a quartz job!");
 		instance.getJmxAdapter().resumeJob(instance, instance.getSchedulerByName(job.getSchedulerName()), job);
-
+		
 		Result result = new Result();
 		result.setMessage("Job已恢复");
 		result.setCallbackType("");

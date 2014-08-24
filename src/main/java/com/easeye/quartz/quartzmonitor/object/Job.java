@@ -21,7 +21,17 @@ public class Job {
 	private Date nextFireTime;
 	private int numTriggers;
 	private String state;
+	
+	public static final int STATUS_INIT = 0 ;
+	public static final int STATUS_RUN = 1 ;
+	public static final int STATUS_PAUSE = 2 ;
+	public static final int STATUS_STOP = 3 ;
+	public static final int STATUS_REM = 3 ;
+	
+	
 
+	private int jobStatus ;
+	
 	public String getQuartzInstanceId() {
 		return quartzInstanceId;
 	}
@@ -156,7 +166,16 @@ public class Job {
 		sb.append(", jobDataMap=").append(jobDataMap);
 		sb.append(", nextFireTime=").append(nextFireTime);
 		sb.append(", numTriggers=").append(numTriggers);
+		sb.append(", jobStatus=").append(jobStatus);
 		sb.append('}');
 		return sb.toString();
+	}
+
+	public int getJobStatus() {
+		return jobStatus;
+	}
+
+	public void setJobStatus(int jobStatus) {
+		this.jobStatus = jobStatus;
 	}
 }

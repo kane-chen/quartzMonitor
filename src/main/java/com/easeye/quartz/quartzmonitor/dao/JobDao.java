@@ -13,7 +13,8 @@ public interface JobDao {
 	 * @throws DBException 
 	 * @throws SQLException 
 	 */
-	public List<Job> getALLJobs(String schedulerId) throws DBException, SQLException;
+	public List<Job> getALLJobs(String schedulerId,int status) throws DBException, SQLException;
+	
 	/**
 	 * 添加一个job
 	 * @param job
@@ -28,6 +29,13 @@ public interface JobDao {
 	 * @throws DBException 
 	 */
 	public void updateJob(Job job) throws DBException, SQLException;
+	/**
+	 * 更新一个job
+	 * @param job
+	 * @throws SQLException 
+	 * @throws DBException 
+	 */
+	public void updateJob(String jobId,int status) throws DBException, SQLException;
 	/**
 	 * 删除一个job
 	 * @param job
